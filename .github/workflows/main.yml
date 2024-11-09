@@ -19,8 +19,22 @@ jobs:
       # На GitHub Actions есть готовые описания шагов, 
       # их можно использовать в своих workflow.
       # Применим готовое описание шага для получения исходного кода
+      # Копируем код проекта
       - name: Check out repository code  # Имя шага задаём сами
         uses: actions/checkout@v3  # Берём готовое решение из библиотеки GitHub Actions
-      # Выполняем команду tree в текущей директории
-      - name: Print project tree
-        run: tree .
+      # Устанавливаем Python.
+      - name: Set up Python
+        uses: action/setup_python@4
+        # Указываем нужную версию
+        with:
+          python-version: 3.9
+      # Устанавливаем зависимости для Flake8
+      - name: Install dependencies
+        # Указываем команды для установки зависимостей
+        run: | # Для выполнения нескольких команд ставим |
+          python -m pip install --upgrade pip
+          pip install flake8==6.0.0 flake8-isort==6.0.0
+      # Запускаем проверку кода на flake8
+      - name: Test with flake8
+        # Запускаем flake8 для backend
+        run: python -m flake8 backend/
